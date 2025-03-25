@@ -1,0 +1,26 @@
+{
+  "name": "devadda",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "sumit",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "dev": "npm start"
+  },
+  "dependencies": {
+    "axios": "^1.8.3",
+    "bcryptjs": "^3.0.2",
+    "config": "^3.3.12",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1",
+    "normalize-url": "^4.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
