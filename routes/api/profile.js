@@ -5,13 +5,19 @@ const axios = require('axios').default;
 const config = require('config');
 const normalizeUrl = require('normalize-url');
 
-
-
 const auth = require('../../middleware/auth');
 
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 const Post = require('../../models/Post');
+
+// Get GitHub token from environment or config
+const getGitHubToken = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.GITHUB_TOKEN;
+  }
+  return config.get('githubToken');
+};
 
 // @route   GET api/profile/me
 // @desc    Get Current User's Profile
@@ -317,7 +323,7 @@ router.get('/github/:username', async (req, res) => {
     );
     const headers = {
       'user-agent': 'node.js',
-      Authorization: `token ${config.get('githubToken')}`,
+      Authorization: `token ${getGitHubToken()}`,
     };
     const gitHubResponse = await axios.get(uri, { headers });
     return res.json(gitHubResponse.data);
