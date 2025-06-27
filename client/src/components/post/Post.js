@@ -29,7 +29,7 @@ const Post = ({ getPost, post: { post, loading } }) => {
 
       <div className='comments'>
         {post.comments.map((comment) => (
-          <CommentItem key={comment._id} comment={comment} postId={post._id} />
+          <CommentItem key={comment._id} comment={comment} postId={(post._id)} />
         ))}
       </div>
     </section>
