@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: devbook-app
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+    healthCheckPath: /api/users
+    autoDeploy: true 

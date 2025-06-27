@@ -1,11 +1,20 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 
 // Connect to Database
 connectDB();
+
+// CORS Middleware
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.CLIENT_URL || '*'
+    : 'http://localhost:3000',
+  credentials: true
+}));
 
 // Initialize Middleware
 app.use(express.json({ strict: false }));

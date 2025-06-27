@@ -77,6 +77,7 @@ router.get('/:id', auth, async (req, res) => {
 router.delete('/:id', auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
+    
 
     // Check for ObjectId format and post
     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/) || !post) {
@@ -88,7 +89,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
-    await post.remove();
+    await post.deleteOne();
 
     res.json({ msg: 'Post removed' });
   } catch (err) {
@@ -127,6 +128,14 @@ router.put('/like/:id', auth, async (req, res) => {
 router.put('/unlike/:id', auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
+    console.log(post);
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found" });
+    }
+
+    if (!post.likes || !Array.isArray(post.likes)) {
+      return res.status(400).json({ msg: "Likes data is missing" });
+    }
 
     // Check if the post has already been liked
     if (!post.likes.some((like) => like.user.toString() === req.user.id)) {
@@ -150,9 +159,7 @@ router.put('/unlike/:id', auth, async (req, res) => {
 // @route   POST api/posts/comment/:id
 // @desc    Comment on a post
 // @access  Private
-router.post(
-  '/comment/:id',
-  [auth, [check('text', 'Text is required').not().isEmpty()]],
+router.post('/comment/:id',[auth, [check('text', 'Text is required').not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
