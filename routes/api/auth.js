@@ -8,6 +8,14 @@ const bcrypt = require('bcryptjs');
 const auth = require('../../middleware/auth');
 const User = require('../../models/User');
 
+// Get JWT secret from environment or config
+const getJWTSecret = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.JWT_SECRET;
+  }
+  return config.get('jwtSecret');
+};
+
 // @route   GET api/auth
 // @desc    Test Route
 // @access  Public
@@ -60,7 +68,7 @@ router.post(
       };
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        getJWTSecret(),
         { expiresIn: 360000 }, // Change to 3600 during production
         (err, token) => {
           if (err) throw err;

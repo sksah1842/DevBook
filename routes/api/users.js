@@ -7,6 +7,14 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../../models/User');
 
+// Get JWT secret from environment or config
+const getJWTSecret = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.JWT_SECRET;
+  }
+  return config.get('jwtSecret');
+};
+
 // For checking if a string is blank, null or undefined
 const isBlank = (str) => !str || /^\s*$/.test(str);
 
@@ -67,7 +75,7 @@ router.post(
       };
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        getJWTSecret(),
         { expiresIn: 360000 }, // Change to 3600 during production
         (err, token) => {
           if (err) throw err;
