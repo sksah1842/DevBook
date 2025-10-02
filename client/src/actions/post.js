@@ -114,13 +114,13 @@ export const addPost = (formData) => async (dispatch) => {
     dispatch(setAlert('Post Created', 'success'));
     return true;
   } catch (err) {
-    const backendError = err?.response?.data;
-    const backendMsg = backendError?.msg || backendError?.error;
-    // Show clearer message instead of backend one for moderation blocks
+    const status = err?.response?.status;
+    const backendError = err?.response?.data || {};
+    const backendMsg = backendError?.error || backendError?.msg || (Array.isArray(backendError?.errors) && backendError.errors[0]?.msg) || undefined;
     if (backendMsg === 'Comment blocked by moderation') {
       dispatch(setAlert('Your content was blocked for toxic language. Please revise and try again.', 'danger'));
-    } else if (backendMsg) {
-      dispatch(setAlert(backendMsg, 'danger'));
+    } else {
+      dispatch(setAlert(backendMsg || (status === 400 ? 'Request was rejected' : 'Error submitting post'), 'danger'));
     }
     dispatch({
       type: POST_ERROR,
@@ -166,12 +166,13 @@ export const addComment = (postId, formData) => async (dispatch) => {
     dispatch(setAlert('Comment Added', 'success'));
     return true;
   } catch (err) {
-    const backendError = err?.response?.data;
-    const backendMsg = backendError?.msg || backendError?.error;
+    const status = err?.response?.status;
+    const backendError = err?.response?.data || {};
+    const backendMsg = backendError?.error || backendError?.msg || (Array.isArray(backendError?.errors) && backendError.errors[0]?.msg) || undefined;
     if (backendMsg === 'Comment blocked by moderation') {
       dispatch(setAlert('Your comment was blocked for toxic language. Please revise and try again.', 'danger'));
-    } else if (backendMsg) {
-      dispatch(setAlert(backendMsg, 'danger'));
+    } else {
+      dispatch(setAlert(backendMsg || (status === 400 ? 'Request was rejected' : 'Error submitting comment'), 'danger'));
     }
     dispatch({
       type: POST_ERROR,
