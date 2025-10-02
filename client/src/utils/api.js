@@ -36,7 +36,12 @@ api.interceptors.response.use(
       const message = messages.filter(Boolean).join('\n');
       if (message) {
         store.dispatch(setAlert(message, 'danger'));
+      } else {
+        const fallback = err.response.statusText || `Request failed (${err.response.status})`;
+        store.dispatch(setAlert(fallback, 'danger'));
       }
+    } else {
+      store.dispatch(setAlert('Network error. Please try again.', 'danger'));
     }
     return Promise.reject(err);
   }
