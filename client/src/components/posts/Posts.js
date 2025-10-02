@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -7,9 +7,15 @@ import PostItem from './PostItem';
 import PostForm from './PostForm';
 
 const Posts = ({ getPosts, post: { posts } }) => {
+  const [query, setQuery] = useState('');
   useEffect(() => {
     getPosts();
   }, [getPosts]);
+
+  const onSearch = (e) => {
+    e.preventDefault();
+    getPosts(query.trim() || undefined);
+  };
 
   return (
     <section className='container'>
@@ -20,6 +26,29 @@ const Posts = ({ getPosts, post: { posts } }) => {
       </p>
 
       <PostForm />
+
+      <form className='form' onSubmit={onSearch} style={{ marginBottom: '1rem' }}>
+        <div className='form-group'>
+          <input
+            type='text'
+            placeholder='Search posts by text or author name'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        <input type='submit' className='btn btn-primary' value='Search' />
+        <button
+          type='button'
+          className='btn'
+          style={{ marginLeft: '0.5rem' }}
+          onClick={() => {
+            setQuery('');
+            getPosts();
+          }}
+        >
+          Reset
+        </button>
+      </form>
 
       <div className='posts'>
         {posts.map((post) => (

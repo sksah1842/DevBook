@@ -7,10 +7,10 @@ import { addPost } from '../../actions/post';
 const PostForm = ({ addPost }) => {
   const [text, setText] = useState('');
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
-    addPost({ text });
-    setText('');
+    const ok = await addPost({ text });
+    if (ok) setText('');
   };
 
   return (

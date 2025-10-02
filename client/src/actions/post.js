@@ -12,9 +12,11 @@ import {
 } from './types';
 
 // Get Posts
-export const getPosts = () => async (dispatch) => {
+export const getPosts = (query) => async (dispatch) => {
   try {
-    const res = await api.get('/posts');
+    const res = await api.get('/posts', {
+      params: query ? { q: query } : undefined,
+    });
 
     dispatch({
       type: GET_POSTS,
@@ -110,14 +112,24 @@ export const addPost = (formData) => async (dispatch) => {
     });
 
     dispatch(setAlert('Post Created', 'success'));
+    return true;
   } catch (err) {
+    const backendError = err?.response?.data;
+    const backendMsg = backendError?.msg || backendError?.error;
+    // Show clearer message instead of backend one for moderation blocks
+    if (backendMsg === 'Comment blocked by moderation') {
+      dispatch(setAlert('Your content was blocked for toxic language. Please revise and try again.', 'danger'));
+    } else if (backendMsg) {
+      dispatch(setAlert(backendMsg, 'danger'));
+    }
     dispatch({
       type: POST_ERROR,
       payload: {
-        msg: err.response.statusText,
-        status: err.response.status,
+        msg: err?.response?.statusText || 'Error',
+        status: err?.response?.status || 400,
       },
     });
+    return false;
   }
 };
 
@@ -152,14 +164,23 @@ export const addComment = (postId, formData) => async (dispatch) => {
     });
 
     dispatch(setAlert('Comment Added', 'success'));
+    return true;
   } catch (err) {
+    const backendError = err?.response?.data;
+    const backendMsg = backendError?.msg || backendError?.error;
+    if (backendMsg === 'Comment blocked by moderation') {
+      dispatch(setAlert('Your comment was blocked for toxic language. Please revise and try again.', 'danger'));
+    } else if (backendMsg) {
+      dispatch(setAlert(backendMsg, 'danger'));
+    }
     dispatch({
       type: POST_ERROR,
       payload: {
-        msg: err.response.statusText,
-        status: err.response.status,
+        msg: err?.response?.statusText || 'Error',
+        status: err?.response?.status || 400,
       },
     });
+    return false;
   }
 };
 

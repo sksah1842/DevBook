@@ -3,6 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require('express-validator');
 
 const auth = require('../../middleware/auth');
+const { moderationMiddleware } = require('../../middleware/moderation');
 
 const Post = require('../../models/Post');
 const Profile = require('../../models/Profile');
@@ -13,7 +14,7 @@ const User = require('../../models/User');
 // @access  Private
 router.post(
   '/',
-  [auth, [check('text', 'Text is required').not().isEmpty()]],
+  [auth, [check('text', 'Text is required').not().isEmpty()], moderationMiddleware],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())
@@ -44,7 +45,17 @@ router.post(
 // @access  Private
 router.get('/', auth, async (req, res) => {
   try {
-    const posts = await Post.find().sort({ date: -1 });
+    const q = (req.query.q || '').trim();
+    const filter = q
+      ? {
+          $or: [
+            { text: { $regex: q, $options: 'i' } },
+            { name: { $regex: q, $options: 'i' } },
+          ],
+        }
+      : {};
+
+    const posts = await Post.find(filter).sort({ date: -1 });
 
     res.json(posts);
   } catch (err) {
@@ -159,7 +170,7 @@ router.put('/unlike/:id', auth, async (req, res) => {
 // @route   POST api/posts/comment/:id
 // @desc    Comment on a post
 // @access  Private
-router.post('/comment/:id',[auth, [check('text', 'Text is required').not().isEmpty()]],
+router.post('/comment/:id',[auth, [check('text', 'Text is required').not().isEmpty()], moderationMiddleware],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty())

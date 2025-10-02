@@ -7,10 +7,10 @@ import { addComment } from '../../actions/post';
 const CommentForm = ({ postId, addComment }) => {
   const [text, setText] = useState('');
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
-    addComment(postId, { text });
-    setText('');
+    const ok = await addComment(postId, { text });
+    if (ok) setText('');
   };
 
   return (
