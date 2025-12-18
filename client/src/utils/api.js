@@ -26,6 +26,10 @@ api.interceptors.response.use(
     if (err.response && err.response.status === 401) {
       store.dispatch({ type: LOGOUT });
     }
+    // Skip showing alert for moderation errors - they are handled by actions with user-friendly messages
+    if (err.response?.data?.error === 'Comment blocked by moderation') {
+      return Promise.reject(err);
+    }
     // Global popup for 4xx/5xx with message payloads
     if (err.response && err.response.data) {
       const data = err.response.data;

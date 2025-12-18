@@ -11,6 +11,15 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAIL = 'LOGIN_FAIL'; // remove
 export const LOGOUT = 'LOGOUT';
 
+export const TWO_FA_SETUP_SUCCESS = 'TWO_FA_SETUP_SUCCESS';
+export const TWO_FA_SETUP_FAIL = 'TWO_FA_SETUP_FAIL';
+export const TWO_FA_VERIFY_SUCCESS = 'TWO_FA_VERIFY_SUCCESS';
+export const TWO_FA_VERIFY_FAIL = 'TWO_FA_VERIFY_FAIL';
+export const TWO_FA_DISABLE_SUCCESS = 'TWO_FA_DISABLE_SUCCESS';
+export const TWO_FA_DISABLE_FAIL = 'TWO_FA_DISABLE_FAIL';
+export const TWO_FA_REQUIRED = 'TWO_FA_REQUIRED';
+export const CLEAR_TWO_FA_SETUP = 'CLEAR_TWO_FA_SETUP';
+
 export const GET_PROFILE = 'GET_PROFILE';
 export const GET_PROFILES = 'GET_PROFILES';
 export const GET_REPOS = 'GET_REPOS';

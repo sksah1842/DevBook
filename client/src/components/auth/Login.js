@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { login } from '../../actions/auth';
+import TwoFactorVerify from './TwoFactorVerify';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, requires2FA, tempToken }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,9 +23,19 @@ const Login = ({ login, isAuthenticated }) => {
     await login(email, password);
   };
 
+  const handleCancel2FA = () => {
+    // Reset form and reload page to clear state
+    window.location.reload();
+  };
+
   // Redirect Logged in User
   if (isAuthenticated) {
     return <Navigate to='/dashboard' />;
+  }
+
+  // Show 2FA verification if required
+  if (requires2FA && tempToken) {
+    return <TwoFactorVerify tempToken={tempToken} onCancel={handleCancel2FA} />;
   }
 
   return (
@@ -72,10 +83,14 @@ const Login = ({ login, isAuthenticated }) => {
 Login.propTypes = {
   login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
+  requires2FA: PropTypes.bool,
+  tempToken: PropTypes.string,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  requires2FA: state.auth.requires2FA,
+  tempToken: state.auth.tempToken,
 });
 
 export default connect(mapStateToProps, { login })(Login);

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import DashboardActions from './DashboardActions';
 import Experience from './Experience';
 import Education from './Education';
+import TwoFactorSetup from '../auth/TwoFactorSetup';
 import { getCurrentProfile, deleteAccount } from '../../actions/profile';
 
 const Dashboard = ({
@@ -29,6 +30,8 @@ const Dashboard = ({
       {profile !== null ? (
         <>
           <DashboardActions />
+
+          <TwoFactorSetup />
 
           <Experience experience={profile.experience} />
 

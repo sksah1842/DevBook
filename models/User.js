@@ -24,6 +24,14 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  twoFactorSecret: {
+    type: String,
+    select: false,
+  },
+  twoFactorEnabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = User = mongoose.model('user', UserSchema);

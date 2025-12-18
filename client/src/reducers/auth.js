@@ -5,6 +5,11 @@ import {
     LOGIN_SUCCESS,
     LOGOUT,
     ACCOUNT_DELETED,
+    TWO_FA_REQUIRED,
+    TWO_FA_SETUP_SUCCESS,
+    TWO_FA_VERIFY_SUCCESS,
+    TWO_FA_DISABLE_SUCCESS,
+    CLEAR_TWO_FA_SETUP,
   } from '../actions/types';
   
   const initialState = {
@@ -12,6 +17,9 @@ import {
     isAuthenticated: null,
     loading: true,
     user: null,
+    requires2FA: false,
+    tempToken: null,
+    twoFASetup: null,
   };
   
   const authReducer = (state = initialState, action) => {
@@ -33,6 +41,25 @@ import {
           isAuthenticated: true,
           loading: false,
         };
+      case TWO_FA_REQUIRED:
+        return {
+          ...state,
+          requires2FA: true,
+          tempToken: payload.tempToken,
+          loading: false,
+        };
+      case TWO_FA_SETUP_SUCCESS:
+        return {
+          ...state,
+          twoFASetup: payload,
+        };
+      case TWO_FA_VERIFY_SUCCESS:
+      case TWO_FA_DISABLE_SUCCESS:
+      case CLEAR_TWO_FA_SETUP:
+        return {
+          ...state,
+          twoFASetup: null,
+        };
       case AUTH_ERROR:
       case LOGOUT:
       case ACCOUNT_DELETED:
@@ -42,6 +69,9 @@ import {
           isAuthenticated: false,
           loading: false,
           user: null,
+          requires2FA: false,
+          tempToken: null,
+          twoFASetup: null,
         };
       default:
         return state;
